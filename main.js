@@ -6,6 +6,12 @@ const options = {
 };
 
 /**
+ * Import the Node.js request package.
+ * See https://www.npmjs.com/package/request
+ */
+const request = require('request');
+
+/**
  * @callback iapCallback
  * @description A [callback function]{@link
  *   https://developer.mozilla.org/en-US/docs/Glossary/Callback_function}
@@ -78,9 +84,25 @@ function processRequestResults(error, response, body, callback) {
    * This function must not check for a hibernating instance;
    * it must call function isHibernating.
    */
-   if (error) {} 
-   else if (isHibernating(response)) {}
-   
+
+  // Initialize return arguments for callback
+  let processedResults = null;
+  let processedError = null;
+
+    if (error) {
+      console.error('Error present.');
+      processedError = error;
+    } else if (response.statusCode !== 200) {
+      console.error('Bad response code.');
+      processedError = response;
+    } else if (isHibernating(response)) {
+      processedError = 'Service Now instance is hibernating';
+      console.error(processedError);
+    } else {
+      processedResults = response;
+    }
+
+    return callback(processedResults, processedError);
 }
 
 
@@ -112,7 +134,16 @@ function sendRequest(callOptions, callback) {
    * from the previous lab. There should be no
    * hardcoded values.
    */
-  const requestOptions = {};
+  const requestOptions = {
+    method: callOptions.method,
+    auth: {
+      user: options.username,
+      pass: options.password,
+    },
+    baseUrl: options.url,
+    uri: uri,
+  };
+  
   request(requestOptions, (error, response, body) => {
     processRequestResults(error, response, body, (processedResults, processedError) => callback(processedResults, processedError));
   });
