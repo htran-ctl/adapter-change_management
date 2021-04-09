@@ -1,8 +1,6 @@
 // Import built-in Node.js package path.
 const path = require('path');
 
-// const util = require('util');
-
 /**
  * Import the ServiceNowConnector class from local Node.js module connector.js
  *   and assign it to constant ServiceNowConnector.
@@ -189,44 +187,7 @@ healthcheck(callback) {
      */
     //  this.connector.get();
 
-    // this.connector.get((data, error) => callback(data, error));
-    this.connector.get((data, error) => {
-
-    var type = typeof data;
-
-    if (type == "object") { // either array or object
-
-        var bodyObj = data.body;
-        var bodyJsonObj = JSON.parse(bodyObj);
-        var bodyResultObj = bodyJsonObj.result;
-
-        // create new result json object
-        const newResultJsonObj = {
-                change_ticket_number: bodyResultObj[0].number,
-                active: bodyResultObj[0].active,
-                priority: bodyResultObj[0].priority,
-                description: bodyResultObj[0].description,
-                work_start: bodyResultObj[0].work_start,
-                work_end: bodyResultObj[0].work_end,
-                change_ticket_key: bodyResultObj[0].sys_id
-            }
-
-        const newBodyJsonObj = {
-            result: [newResultJsonObj]
-        }
-
-        console.error(`\n>>>>>>>>>> newBodyJsonObj:\n${JSON.stringify(newBodyJsonObj, null, 4)}`);
-        console.error(`\n>>>>>>>>>> data.body:\n${JSON.stringify(data.body, null, 4)}`);
-
-        data.body = JSON.stringify(newBodyJsonObj);
-
-        console.error(`\n>>>>>>>>>> AFTER SET data.body:\n${JSON.stringify(data.body, null, 4)}`);
-        console.error(`\n>>>>>>>>>> AFTER SET data:\n${JSON.stringify(data, null, 4)}`);
-
-    }
-
-    return callback(data, error);
-    });
+    this.connector.get((data, error) => callback(data, error));
   }
 
   /**

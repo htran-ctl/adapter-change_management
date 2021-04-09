@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/htran-ctl/adapter-change_management#readme",
   "dependencies": {
+    "object-bystring": "^5.0.1",
     "request": "^2.88.2"
   }
 }
